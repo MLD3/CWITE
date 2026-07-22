@@ -1,8 +1,7 @@
 # Real-data CWITE experiments
 
-This folder contains the cleaned-up scripts for reproducing the real-data experiments and
-reviewer-response analyses. The exploratory scripts in the parent `retrain/` folder are
-not needed for the collaborator-facing run.
+This folder contains scripts for running the real-data experiments, sensitivity analyses,
+propensity diagnostics, clinical overprediction metrics, and report-table generation.
 
 ## Files
 
@@ -66,8 +65,8 @@ $CWITE_REAL_DATA_DIR
 
 ## 1. One-command serial run
 
-For a clean collaborator run, use the serial runner. It writes everything under one root
-folder with clean names and never emits stale legacy CWITE rows.
+For a one-command run, use the serial runner. It writes all outputs under one root
+folder with consistent names.
 
 Default output root:
 
@@ -433,7 +432,7 @@ $CWITE_REAL_RUN_ROOT/cwite_k_sensitivity/cwite_k5_y_test_pred.joblib
 $CWITE_REAL_RUN_ROOT/cwite_k_sensitivity/cwite_k_sensitivity_results.csv
 ```
 
-## Notes for collaborators
+## Analysis notes
 
 - Do not use legacy CWITE rows from older outputs. The final CWITE prediction
   file is `cwite/proposed_feature_sweep_best_y_test_pred.joblib`.

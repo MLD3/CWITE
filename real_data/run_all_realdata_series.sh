@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Serial end-to-end real-data run for collaborator handoff.
+# Serial end-to-end real-data run.
 # Override these when launching if needed:
 #   DATA_DIR=/path/to/data RUN_ROOT=/path/to/output GPU=0 bash run_all_realdata_series.sh
 
