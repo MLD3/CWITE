@@ -25,7 +25,9 @@ Run `Support_data_50_oracle_update.ipynb` to generate the semi-synthetic splits 
 $CWITE_DATA_ROOT/support50_propbin_data/
 ```
 
-The model scripts expect files named like:
+The manuscript reports the covariate-shift **low-resource** setting, using files with the suffix `covariate_low_resource`. The released scripts also include loops over `covariate_moderate_resource` and `covariate_high_resource`, which were generated during development and are kept for transparency, but the reported manuscript setting is `covariate_low_resource`.
+
+For the reported setting, the model scripts expect files named like:
 
 ```text
 X_train_covariate_low_resource.joblib
@@ -58,7 +60,7 @@ These write selected-configuration text files. The release keeps the original se
 results/legacy_text_outputs/
 ```
 
-Then run the final model scripts, which read those selected configurations and write models/predictions under `CWITE_OUTPUT_ROOT`:
+Then run the final model scripts, which read those selected configurations and write models/predictions under `CWITE_OUTPUT_ROOT`. These scripts currently iterate over the low-, moderate-, and high-resource suffixes; use the `covariate_low_resource` outputs for the manuscript-reported semi-synthetic results.
 
 ```bash
 python3 IPCW.py
