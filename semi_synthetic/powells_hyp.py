@@ -6,7 +6,7 @@ import torch
 import torch.utils.data as data_utils
 import numpy as np
 import os
-from cwite_paths import data_path, output_path, output_dir
+from cwite_paths import data_path, output_path, output_dir, release_path
 import torch
 import torch.nn as nn
 torch.backends.cudnn.enabled=False
@@ -163,7 +163,7 @@ class DeepHit(nn.Module):
         
         return event_loss
 
-f = open('powells.txt', 'w')    
+f = open(release_path('results', 'legacy_text_outputs', 'powells.txt'), 'w')    
     
 params = []
 hospital_types = ['low_resource', 'moderate_resource', 'high_resource']

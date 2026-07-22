@@ -6,7 +6,7 @@ import torch
 import torch.utils.data as data_utils
 import numpy as np
 import os
-from cwite_paths import data_path, output_path, output_dir
+from cwite_paths import data_path, output_path, output_dir, release_path
 import torch
 import torch.nn as nn
 torch.backends.cudnn.enabled=False
@@ -181,7 +181,7 @@ for strategy in strategies:
     elif strategy == 'covariate':
         params.extend(['%s_%s'%(strategy, h) for h in hospital_types])
     
-f = open('deephit.txt', 'w')
+f = open(release_path('results', 'legacy_text_outputs', 'deephit.txt'), 'w')
 
 print(params)
 for suffix in params:

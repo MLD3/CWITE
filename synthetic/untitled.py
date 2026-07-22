@@ -7,7 +7,7 @@ all_results = []
 
 
 
-f = open('clustering_results.txt', 'w')
+f = open(release_path('results', 'legacy_text_outputs', 'clustering_results.txt'), 'w')
 for COUNT in range(1000):
     suffix = f'COUNT{COUNT}'
 

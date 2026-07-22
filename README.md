@@ -15,6 +15,27 @@ The synthetic experiments can be regenerated from the included code. The semi-sy
 
 The semi-synthetic experiments are based on the SUPPORT study: Knaus et al., "The SUPPORT prognostic model. Objective estimates of survival for seriously ill hospitalized adults," Annals of Internal Medicine, 1995. PubMed: https://pubmed.ncbi.nlm.nih.gov/7810938/; DOI: https://doi.org/10.7326/0003-4819-122-3-199502010-00007.
 
+## Data Generation
+
+Detailed regeneration instructions are provided in the experiment folders:
+
+- `synthetic/README.md`: synthetic data generation notebooks, expected generated files, and example commands for running the synthetic methods.
+- `semi_synthetic/README.md`: SUPPORT-derived semi-synthetic data preparation, expected generated files, hyperparameter scripts, and final method runs.
+
+The generated data files are intentionally kept outside the repository and are read through `CWITE_DATA_ROOT`. Model outputs and predictions are written outside the repository through `CWITE_OUTPUT_ROOT`.
+
+## Included Results
+
+Legacy text logs, selected configurations, paper tables, and figures used during manuscript preparation are retained for transparency, but they are separated from the runnable source code:
+
+- `synthetic/results/legacy_text_outputs/`
+- `synthetic/results/figures/`
+- `synthetic/d_calibration/results/legacy_text_outputs/`
+- `semi_synthetic/results/legacy_text_outputs/`
+- `semi_synthetic/results/paper_outputs/`
+
+New synthetic and semi-synthetic runs write their text summaries into the corresponding `results/legacy_text_outputs/` directories rather than the source-code directories.
+
 ## Running The Code
 
 Install the Python dependencies listed in `requirements.txt`, then point the scripts at local data and output directories:

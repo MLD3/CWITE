@@ -5,7 +5,7 @@ from sklearn.mixture import GaussianMixture
 from sklearn.decomposition import PCA
 from sklearn.metrics import silhouette_score
 import os
-from cwite_paths import data_path, output_path, output_dir
+from cwite_paths import data_path, output_path, output_dir, release_path
 
 def save_clusters(name, categories_val):
     out_path = output_path('clustering_results', f'{name}.joblib')

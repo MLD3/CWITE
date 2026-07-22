@@ -6,7 +6,7 @@ import torch
 import torch.utils.data as data_utils
 import numpy as np
 import os
-from cwite_paths import data_path, output_path, output_dir
+from cwite_paths import data_path, output_path, output_dir, release_path
 import torch
 import torch.nn as nn
 torch.backends.cudnn.enabled=False
@@ -158,7 +158,7 @@ for strategy in strategies:
 
 
 print(params)
-f = open('IPCW.txt', 'w')
+f = open(release_path('results', 'legacy_text_outputs', 'IPCW.txt'), 'w')
 for suffix in params:
     X_test = joblib.load(data_path('support50_propbin_data', 'X_test_%s.joblib')%suffix)
     y_test = joblib.load(data_path('support50_propbin_data', 'orig_y_test_%s.joblib')%suffix)

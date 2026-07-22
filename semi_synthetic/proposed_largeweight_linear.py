@@ -6,7 +6,7 @@ import torch
 import torch.utils.data as data_utils
 import numpy as np
 import os
-from cwite_paths import data_path, output_path, output_dir
+from cwite_paths import data_path, output_path, output_dir, release_path
 import torch
 import torch.nn as nn
 torch.backends.cudnn.enabled=False
@@ -203,7 +203,7 @@ for strategy in strategies:
         params.extend(['%s_%s'%(strategy, h) for h in hospital_types])
 
 # Load and parse each line
-file_path = 'proposed.txt'
+file_path = release_path('results', 'legacy_text_outputs', 'proposed.txt')
 # Load and parse each line
 hyps = []
 with open(file_path, 'r') as f:

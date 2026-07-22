@@ -2,8 +2,8 @@ from pathlib import Path
 import os
 
 
-DATA_ROOT = Path(os.environ.get("CWITE_DATA_ROOT", "../data")).expanduser()
-OUTPUT_ROOT = Path(os.environ.get("CWITE_OUTPUT_ROOT", "../outputs")).expanduser()
+DATA_ROOT = Path(os.environ.get("CWITE_DATA_ROOT", "../../data")).expanduser()
+OUTPUT_ROOT = Path(os.environ.get("CWITE_OUTPUT_ROOT", "../../outputs")).expanduser()
 RELEASE_ROOT = Path(__file__).resolve().parent
 
 

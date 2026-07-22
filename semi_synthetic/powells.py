@@ -6,7 +6,7 @@ import torch
 import torch.utils.data as data_utils
 import numpy as np
 import os
-from cwite_paths import data_path, output_path, output_dir
+from cwite_paths import data_path, output_path, output_dir, release_path
 import torch
 import torch.nn as nn
 torch.backends.cudnn.enabled=False
@@ -146,7 +146,7 @@ class DeepHit(nn.Module):
         return event_loss
 
 # Load and parse each line
-file_path = 'powells.txt'
+file_path = release_path('results', 'legacy_text_outputs', 'powells.txt')
 # Load and parse each line
 hyps = []
 with open(file_path, 'r') as f:

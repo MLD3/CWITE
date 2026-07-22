@@ -6,7 +6,7 @@ import torch
 import torch.utils.data as data_utils
 import numpy as np
 import os
-from cwite_paths import data_path, output_path, output_dir
+from cwite_paths import data_path, output_path, output_dir, release_path
 import torch
 import torch.nn as nn
 torch.backends.cudnn.enabled=False
@@ -119,7 +119,7 @@ class IPCW(nn.Module):
         
         return event_loss
     
-f = open('proposed_samecluster_hyp_%d_%d.txt'%(idx_min, idx_max), 'w')    
+f = open(release_path('results', 'legacy_text_outputs', 'proposed_samecluster_hyp_%d_%d.txt' % (idx_min, idx_max)), 'w')    
 
 for COUNT in range(idx_min, idx_max):
     suffix = 'COUNT%d'%(COUNT)
