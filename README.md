@@ -1,6 +1,6 @@
 # CWITE MLHC 2026 Code Release
 
-This repository contains code accompanying the MLHC 2026 paper on CWITE for time-to-event prediction with informative censoring.
+This repository contains code accompanying the MLHC 2026 paper on CWITE for time-to-event prediction under limited uncensored training support and censoring distribution shift.
 
 ## Directory Structure
 
@@ -12,6 +12,8 @@ This repository contains code accompanying the MLHC 2026 paper on CWITE for time
 ## Data Availability
 
 The synthetic experiments can be regenerated from the included code. The semi-synthetic experiments use SUPPORT-derived data preparation artifacts included with the experiment code where available. The real-data experiments use protected clinical data that cannot be redistributed; those scripts are included to document the analysis pipeline and should be run in an approved environment with the required derived input files.
+
+The semi-synthetic experiments are based on the SUPPORT study: Knaus et al., "The SUPPORT prognostic model. Objective estimates of survival for seriously ill hospitalized adults," Annals of Internal Medicine, 1995. PubMed: https://pubmed.ncbi.nlm.nih.gov/7810938/; DOI: https://doi.org/10.7326/0003-4819-122-3-199502010-00007.
 
 ## Running The Code
 
