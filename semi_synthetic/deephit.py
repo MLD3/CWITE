@@ -173,17 +173,7 @@ class DeepHit(nn.Module):
         loss = event_loss.sum() + censored_loss.sum()
  
         return loss
-params = []
-hospital_types = ['low_resource', 'moderate_resource', 'high_resource']
-strategies = ['covariate']
-thresholds = [20, 40, 60, 80]
-for strategy in strategies:
-    if strategy == 'hybrid':
-        params.extend(['%s_T%d_%s'%(strategy, t, h) for t in thresholds for h in hospital_types])
-    elif strategy == 'outcome':
-        params.extend(['%s_T%d'%(strategy, t) for t in thresholds])
-    elif strategy == 'covariate':
-        params.extend(['%s_%s'%(strategy, h) for h in hospital_types])
+params = ['covariate']
 
 # Load and parse each line
 file_path = release_path('results', 'legacy_text_outputs', 'deephit.txt')

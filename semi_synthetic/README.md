@@ -19,28 +19,28 @@ export CWITE_DATA_ROOT=/path/to/cwite-data
 export CWITE_OUTPUT_ROOT=/path/to/cwite-outputs
 ```
 
-Run `Support_data_50_oracle_update.ipynb` to generate the semi-synthetic splits used by the experiments. The notebook writes joblib files under:
+Run `Support_data_50_oracle_update.ipynb` to generate the semi-synthetic split used by the experiments. The notebook writes joblib files under:
 
 ```text
 $CWITE_DATA_ROOT/support50_propbin_data/
 ```
 
-The manuscript reports the covariate-shift **high-resource** setting, using files with the suffix `covariate_high_resource`. The released scripts also include loops over `covariate_low_resource` and `covariate_moderate_resource`, which were generated during development and are kept for transparency, but the reported manuscript setting is `covariate_high_resource`.
+The semi-synthetic split uses a covariate-driven censoring rule based on SUPPORT severity markers: coma hours, bilirubin, creatinine, mean blood pressure, and albumin. Individuals meeting this severity rule are censored in training and validation, while the test set is kept uncensored to evaluate performance under censoring distribution shift.
 
-For the reported setting, the model scripts expect files named like:
+The model scripts expect files named like:
 
 ```text
-X_train_covariate_high_resource.joblib
-y_train_covariate_high_resource.joblib
-orig_y_train_covariate_high_resource.joblib
-binary_y_train_covariate_high_resource.joblib
-X_val_covariate_high_resource.joblib
-y_val_covariate_high_resource.joblib
-orig_y_val_covariate_high_resource.joblib
-binary_y_val_covariate_high_resource.joblib
-X_test_covariate_high_resource.joblib
-orig_y_test_covariate_high_resource.joblib
-binary_y_test_covariate_high_resource.joblib
+X_train_covariate.joblib
+y_train_covariate.joblib
+orig_y_train_covariate.joblib
+binary_y_train_covariate.joblib
+X_val_covariate.joblib
+y_val_covariate.joblib
+orig_y_val_covariate.joblib
+binary_y_val_covariate.joblib
+X_test_covariate.joblib
+orig_y_test_covariate.joblib
+binary_y_test_covariate.joblib
 ```
 
 ## Run models
@@ -60,7 +60,7 @@ These write selected-configuration text files. The release keeps the original se
 results/legacy_text_outputs/
 ```
 
-Then run the final model scripts, which read those selected configurations and write models/predictions under `CWITE_OUTPUT_ROOT`. These scripts currently iterate over the low-, moderate-, and high-resource suffixes; use the `covariate_high_resource` outputs for the manuscript-reported semi-synthetic results.
+Then run the final model scripts, which read those selected configurations and write models/predictions under `CWITE_OUTPUT_ROOT`:
 
 ```bash
 python3 IPCW.py

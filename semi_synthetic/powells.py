@@ -153,17 +153,7 @@ with open(file_path, 'r') as f:
     for line in f:
         if len(line.split(',')) > 2:
             hyps.append(ast.literal_eval(line.strip()))    
-params = []
-hospital_types = ['low_resource', 'moderate_resource', 'high_resource']
-strategies = ['covariate']
-thresholds = [20, 40, 60, 80]
-for strategy in strategies:
-    if strategy == 'hybrid':
-        params.extend(['%s_T%d_%s'%(strategy, t, h) for t in thresholds for h in hospital_types])
-    elif strategy == 'outcome':
-        params.extend(['%s_T%d'%(strategy, t) for t in thresholds])
-    elif strategy == 'covariate':
-        params.extend(['%s_%s'%(strategy, h) for h in hospital_types])
+params = ['covariate']
 
 
 print(params)

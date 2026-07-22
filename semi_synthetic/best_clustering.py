@@ -28,7 +28,7 @@ def save_variances(name, categories_val, y_val, orig_y_val, binary_y_val):
     out_path = output_path('clustering_results', f'{name}_variances.joblib')
     joblib.dump(result, out_path)
 
-suffix = 'covariate_low_resource'
+suffix = 'covariate'
 for folder in ['support50_propbin']:
     try:
         path = data_path(folder)
