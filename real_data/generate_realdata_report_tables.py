@@ -87,6 +87,25 @@ def make_masks(propensity, low_max, high_min):
     }
 
 
+def make_matched_masks(propensity, e, k):
+    """Subgroups of equal size: the k lowest- and k highest-propensity
+    uncensored test individuals. MAE is uncensored-only, so matching on
+    uncensored count equalizes precision across the two subgroups."""
+    unc = np.flatnonzero(np.asarray(e) == 1)
+    if 2 * k > len(unc):
+        raise ValueError(f"match_k={k} needs {2 * k} uncensored individuals; only {len(unc)} exist")
+    order = unc[np.argsort(propensity[unc], kind="stable")]
+    masks = {}
+    for label, idx in (
+        (f"Lowest {k} propensity", order[:k]),
+        (f"Highest {k} propensity", order[-k:]),
+    ):
+        m = np.zeros(len(propensity), dtype=bool)
+        m[idx] = True
+        masks[label] = m
+    return masks
+
+
 def make_clinical_masks(propensity, low_max, high_min):
     masks = {"All test individuals": np.ones(len(propensity), dtype=bool)}
     masks.update(make_masks(propensity, low_max, high_min))
@@ -109,6 +128,61 @@ def cindex(y, e, pred):
         return float(concordance_index(y, pred, e))
     except ValueError:
         return np.nan
+
+
+def cindex_vs_full_counts(y, e, pred, mask):
+    """Per-subgroup-member concordant/comparable counts against the FULL test set.
+
+    A pair is comparable when the earlier of the two individuals had an observed
+    event. Each pair is formed between one subgroup member and any test
+    individual, matching the estimand described in the paper. Ties in the
+    predicted TTE receive half credit.
+    """
+    y = np.asarray(y, dtype=float)
+    e = np.asarray(e).astype(int)
+    pred = np.asarray(pred, dtype=float)
+    in_mask = np.asarray(mask, dtype=bool)
+    order = np.arange(len(y))
+    idx = np.flatnonzero(in_mask)
+    conc = np.zeros(len(idx))
+    comp = np.zeros(len(idx))
+    for t, i in enumerate(idx):
+        # comparable if subgroup member had event and died first, or vice versa
+        comparable = ((e[i] == 1) & (y[i] < y)) | ((e == 1) & (y < y[i]))
+        comparable[i] = False
+        # count each within-subgroup pair once, from its lower-indexed member
+        comparable &= ~(in_mask & (order < i))
+        m = np.flatnonzero(comparable)
+        if m.size == 0:
+            continue
+        tie = pred[m] == pred[i]
+        # higher predicted TTE should correspond to the later observed time
+        correct = np.where(y[i] < y[m], pred[i] < pred[m], pred[m] < pred[i])
+        conc[t] = float(np.sum(correct & ~tie) + 0.5 * np.sum(tie))
+        comp[t] = float(m.size)
+    return conc, comp
+
+
+def bootstrap_cindex_vs_full(y, e, pred, mask, n_boot, seed):
+    """Bootstrap the subgroup-vs-full-test-set c-index by resampling subgroup
+    members; the reference set (the full test set) is held fixed."""
+    conc, comp = cindex_vs_full_counts(y, e, pred, mask)
+    n = int(np.sum(mask))
+    n_unc = int(np.sum(np.asarray(e)[np.asarray(mask, dtype=bool)] == 1))
+    if comp.sum() == 0:
+        return np.nan, np.nan, np.nan, n, n_unc
+    point = float(conc.sum() / comp.sum())
+    rng = np.random.default_rng(seed)
+    vals = []
+    for _ in range(n_boot):
+        s = rng.integers(0, len(conc), size=len(conc))
+        denom = comp[s].sum()
+        if denom > 0:
+            vals.append(conc[s].sum() / denom)
+    if not vals:
+        return point, np.nan, np.nan, n, n_unc
+    lo, hi = np.percentile(vals, [2.5, 97.5])
+    return point, float(lo), float(hi), n, n_unc
 
 
 def bootstrap(y, e, pred, mask, fn, n_boot, seed):
@@ -248,7 +322,12 @@ def evaluate_extreme_bins(y, e, preds, masks, n_boot, seed):
     for metric, _, fn in specs:
         for model, pred in preds.items():
             for bin_name, mask in masks.items():
-                est, lo, hi, n, n_unc = bootstrap(y, e, pred, mask, fn, n_boot, seed)
+                if metric == "C-index":
+                    est, lo, hi, n, n_unc = bootstrap_cindex_vs_full(
+                        y, e, pred, mask, n_boot, seed
+                    )
+                else:
+                    est, lo, hi, n, n_unc = bootstrap(y, e, pred, mask, fn, n_boot, seed)
                 rows.append(
                     {
                         "Metric": metric,
@@ -283,6 +362,12 @@ def main():
     parser.add_argument("--horizons", type=int, nargs="+", default=[1, 2, 3, 7])
     parser.add_argument("--low-max", type=float, default=0.10)
     parser.add_argument("--high-min", type=float, default=0.70)
+    parser.add_argument("--match-k", type=int, default=103,
+                        help="Use the k lowest- and k highest-propensity uncensored individuals "
+                             "as the two subgroups. Default 103 reproduces the paper: all test "
+                             "individuals below 0.10 propensity contain 103 uncensored "
+                             "individuals, and the comparison group is matched to that size. "
+                             "Set to 0 to fall back to the --low-max/--high-min thresholds.")
     parser.add_argument("--n-boot", type=int, default=1000)
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--no-defaults", action="store_true", help="Require explicit --model/--cluster-model paths.")
@@ -294,8 +379,13 @@ def main():
     y = load_split(args.data_dir, "test", "y")
     e = load_split(args.data_dir, "test", "binary_y").astype(int)
     propensity, best_c, val_auroc = fit_propensity(args.data_dir)
-    masks = make_masks(propensity, args.low_max, args.high_min)
-    clinical_masks = make_clinical_masks(propensity, args.low_max, args.high_min)
+    if args.match_k:
+        masks = make_matched_masks(propensity, e, args.match_k)
+        clinical_masks = {"All test individuals": np.ones(len(propensity), dtype=bool)}
+        clinical_masks.update(masks)
+    else:
+        masks = make_masks(propensity, args.low_max, args.high_min)
+        clinical_masks = make_clinical_masks(propensity, args.low_max, args.high_min)
 
     main_paths = parse_named_paths(args.model, [] if args.no_defaults else DEFAULT_MODELS)
     cluster_paths = parse_named_paths(args.cluster_model, [] if args.no_defaults else DEFAULT_CLUSTER_MODELS)
