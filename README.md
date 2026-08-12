@@ -1,4 +1,4 @@
-# CWITE MLHC 2026 Code Release
+# CWITE MLHC 2026 Code Release (Paper will be uploaded when it is published online)
 
 This repository contains code accompanying the MLHC 2026 paper on CWITE for time-to-event prediction under limited uncensored training support and censoring distribution shift.
 
