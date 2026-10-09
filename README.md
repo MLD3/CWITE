@@ -1,6 +1,6 @@
 # CWITE MLHC 2026 Code Release 
 
-This repository contains code accompanying the MLHC 2026 paper on CWITE for time-to-event prediction under limited uncensored training support and censoring distribution shift.
+This repository contains code accompanying the [MLHC 2026 paper on CWITE](https://raw.githubusercontent.com/mlresearch/v340/main/assets/krishnamoorthy26a/krishnamoorthy26a.pdf) for time-to-event prediction under limited uncensored training support and censoring distribution shift.
 
 ## Directory Structure
 
